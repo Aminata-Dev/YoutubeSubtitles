@@ -12,11 +12,20 @@ sous_titres_video = ''
 
 url = input("URL ?\n@> ")
 req = requests.get(url)
+# liste = []
 
 liste_sous_titres = list(req.json()['events'])
 for i in range(len(liste_sous_titres)):
-    sous_titre = liste_sous_titres[i]['segs'][0]['utf8']
-    sous_titres_video += f"{sous_titre} "
-    ecriture_sous_titres_fichier_texte(sous_titres_video.replace(str("\u0301"), "e"))
+    # print(liste_sous_titres[1]['segs'])
+    try:
+        for j in range(len(liste_sous_titres[i]['segs'])): #certaines listes segs contiennent plusieurs sous titres
+            sous_titre = liste_sous_titres[i]['segs'][j]['utf8']
+            if sous_titre != '\n':
+                sous_titres_video += f"{sous_titre} "
+                # liste.append(sous_titre)
+    except KeyError: #le premier evenement n'est pas toujours un sous titre
+        pass
 
+ecriture_sous_titres_fichier_texte(sous_titres_video.replace(str("\u0301"), "e"))
 print(sous_titres_video)
+# print(liste)
